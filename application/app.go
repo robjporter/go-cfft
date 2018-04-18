@@ -32,7 +32,7 @@ const (
 	TIMERINVENTORYSUBMISSION = 1
 	TIMEROUT                 = 10
 	TIMEREGENERATION = 5
-	TIMERREGENERATEINDEX 	 = time.Duration(TIMEREGENERATION) * time.minute
+	TIMERREGENERATEINDEX 	 = time.Duration(TIMEREGENERATION) * time.Minute
 	TIMERGATHERSTAT          = time.Duration(TIMERINVENTORY) * time.Minute
 	TIMERSUBMITMETRICS       = time.Duration(2) * time.Minute //time.Duration(TIMERINVENTORYSUBMISSION) * time.Hour
 	DATAOUTPUTFOLDER         = "output/"
@@ -261,7 +261,7 @@ func (a *Application) setupSetupRoutes() {
 }
 
 func (a *Application) setupTemplates() {
-	a.Server.Use(static.ServeRoot("/public", NewAssets("public2")))
+	a.Server.Use(static.ServeRoot("/", NewAssets("public")))
 	a.Server.Renderer = NewTemplate()
 	a.Logger.Debug("Server Renderer initialised successfully.")
 }

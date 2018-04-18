@@ -22,7 +22,7 @@ func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Con
 // NewTemplate creates a new template
 func NewTemplate() *Template {
 	return &Template{
-		templates: binhtml.New(data.Asset, data.AssetDir).MustLoadDirectory("public2"),
+		templates: binhtml.New(data.Asset, data.AssetDir).MustLoadDirectory("public"),
 	}
 }
 
