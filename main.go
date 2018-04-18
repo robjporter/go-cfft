@@ -4,6 +4,10 @@
 // https://github.com/tidwall/gjson
 // https://github.com/tidwall/sjson
 
+// git tag -a v0.2.3 -m "First release"
+// git push origin v0.2.3
+// goreleaser
+
 package main
 
 import (
