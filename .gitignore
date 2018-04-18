@@ -1,5 +1,5 @@
-
-*.db
 .DS_Store
 packages/.DS_Store
 */.DS_Store
+*.code-workspace
+*.db
