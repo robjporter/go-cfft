@@ -5,3 +5,4 @@ packages/.DS_Store
 *.db
 data.db
 backup/
+dist/
