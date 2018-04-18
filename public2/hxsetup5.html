@@ -1,0 +1,91 @@
+<html>
+  <head>
+    <link href="public/semantic.2.3.1.min.css" rel="stylesheet" media="screen" title="no title">
+    <link href="public/custom.min.css" rel="stylesheet" media="screen" title="no title">
+
+    <title>{{.appname}} - {{.title}}</title>
+  </head>
+  <body>
+        <div class="ui grid">
+          <div class="three column row">
+            <div class="column"></div>
+            <div class="column center aligned"><img src="public/ciscologo.png" width="200" height="130"></div>
+            <div class="column"></div>
+          </div>
+          <div class="three column row">
+            <div class="column"></div>
+            <div class="column center aligned"><h1 class="ui header">Cisco Capital Flexible Billing Tool</h1></div>
+            <div class="column"></div>
+          </div>
+          <div class="one column row">
+            <div class="column center aligned">
+              <div class="ui steps">
+                <a class="step">
+                  <div class="content">
+                    <div class="title">HX - Step 1</div>
+                    <div class="description">License & usage agreement</div>
+                  </div>
+                </a>
+                <a class="step">
+                  <div class="content">
+                    <div class="title">HX - Step 2</div>
+                    <div class="description">Hyperflex Connect details</div>
+                  </div>
+                </a>
+                <a class="step">
+                  <div class="content">
+                    <div class="title">HX - Step 3</div>
+                    <div class="description">Capital details</div>
+                  </div>
+                </a>
+                <a class="step">
+                  <div class="content">
+                    <div class="title">HX - Step 4</div>
+                    <div class="description">Confirmation</div>
+                  </div>
+                </a>
+                <a class="active step">
+                  <i class="truck icon"></i>
+                  <div class="content">
+                    <div class="title">HX - Step 5</div>
+                    <div class="description">Complete</div>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="three column row">
+            <div class="column"></div>
+            {{if .success}}
+            <div class="column center aligned" style="margin-top:40px;"><i class="circular massive green check icon"></i></div>
+            {{else}}
+            <div class="column center aligned" style="margin-top:40px;"><i class="circular massive red times icon"></i></div>
+            {{end}}
+            <div class="column"></div>
+          </div>
+          <div class="three column row">
+            <div class="column"></div>
+            <div class="column center aligned"><button class="ui primary submit button" type="submit">Complete</button></div>
+            <div class="column"></div>
+          </div>
+        </div>
+      <script src="public/jquery.3.3.1.min.js"></script>
+      <script src="public/semantic.2.3.1.min.js"></script>
+      <script>
+      $(document).ready(function(){
+        $('.ui.checkbox').checkbox();
+        {{if .success}}
+        $('.ui.primary.submit.button').click(function() {
+          var url = "/";
+          $(location).attr('href',url);
+        });
+        {{else}}
+        $('.ui.primary.submit.button').click(function() {
+          var url = "/setup";
+          $(location).attr('href',url);
+        });
+        {{end}}
+      });
+      </script>
+  </body>
+</html>

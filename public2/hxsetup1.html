@@ -1,0 +1,111 @@
+<html>
+  <head>
+    <link href="public/semantic.2.3.1.min.css" rel="stylesheet" media="screen" title="no title">
+    <link href="public/custom.min.css" rel="stylesheet" media="screen" title="no title">
+
+    <title>{{.appname}} - {{.title}}</title>
+  </head>
+  <body>
+      <form class="ui form" method="POST" action="/hxsetup2">
+        <div class="ui grid">
+          <div class="three column row">
+            <div class="column"></div>
+            <div class="column center aligned"><img src="public/ciscologo.png" width="200" height="130"></div>
+            <div class="column"></div>
+          </div>
+          <div class="three column row">
+            <div class="column"></div>
+            <div class="column center aligned"><h1 class="ui header">Cisco Capital Flexible Billing Tool</h1></div>
+            <div class="column"></div>
+          </div>
+          <div class="one column row">
+            <div class="column center aligned">
+              <div class="ui steps">
+                <a class="active step">
+                  <i class="truck icon"></i>
+                  <div class="content">
+                    <div class="title">HX - Step 1</div>
+                    <div class="description">License & usage agreement</div>
+                  </div>
+                </a>
+                <a class="step">
+                  <div class="content">
+                    <div class="title">HX - Step 2</div>
+                    <div class="description">Hyperflex Connect details</div>
+                  </div>
+                </a>
+                <a class="step">
+                  <div class="content">
+                    <div class="title">HX - Step 3</div>
+                    <div class="description">Capital details</div>
+                  </div>
+                </a>
+                <a class="step">
+                  <div class="content">
+                    <div class="title">HX - Step 4</div>
+                    <div class="description">Confirmation</div>
+                  </div>
+                </a>
+                <a class="step">
+                  <div class="content">
+                    <div class="title">HX - Step 5</div>
+                    <div class="description">Complete</div>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="three column row">
+            <div class="column"></div>
+            <div class="column center aligned" style="margin-top:40px;"><h2 class="ui header">Please read & agree to the following End User License Agreement.</h2></div>
+            <div class="column"></div>
+          </div>
+          <div class="three column row mt-4">
+            <div class="column"></div>
+            <div class="column right aligned" style="margin-top:0.75rem;">
+                {{.agreementdate}}
+               <textarea cols="50" rows="20">{{.agreement}}</textarea>
+            </div>
+            <div class="column"></div>
+          </div>
+          <div class="four column row">
+            <div class="column"></div>
+            <div class="column right aligned" style="margin-top:0.75rem;"><h3 class="ui header">I agree</h3></div>
+            <div class="column" style="margin-top:1rem;"><div class="ui checkbox"><input type="checkbox" name="secure" tabindex="0"></div></div>
+            <div class="column"></div>
+          </div>
+          <div class="three column row">
+            <div class="column"></div>
+            <div class="column center aligned"><button class="ui primary submit button" type="submit">Connect</button></div>
+            <div class="column"></div>
+          </div>
+          <div class="three column row">
+            <div class="column"></div>
+            <div class="column center aligned"><div class="ui error message"></div></div>
+            <div class="column"></div>
+          </div>
+        </div>
+      </form>
+			<script src="public/jquery.3.3.1.min.js"></script>
+  		<script src="public/semantic.2.3.1.min.js"></script>
+      <script>
+        $(document).ready(function(){
+          $('.ui.checkbox').checkbox();
+          $('.ui.form')
+          .form({
+            fields: {
+              secure    : {
+                identifier: 'secure',
+                rules: [
+                  {
+                    type   : 'checked',
+                    prompt : 'You must agree to the End User License Agreement.'
+                  }
+                ]
+              }
+            }
+          });
+        });
+      </script>
+  </body>
+</html>

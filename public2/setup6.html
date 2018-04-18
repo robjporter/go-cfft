@@ -1,0 +1,102 @@
+<html>
+  <head>
+    <link href="public/semantic.2.3.1.min.css" rel="stylesheet" media="screen" title="no title">
+    <link href="public/custom.min.css" rel="stylesheet" media="screen" title="no title">
+    <title>{{.appname}} - {{.title}}</title>
+  </head>
+  <body>
+      <form class="ui form" method="POST" action="/setup7">
+        <div class="ui grid">
+          <div class="three column row">
+            <div class="column"></div>
+            <div class="column center aligned"><img src="public/ciscologo.png" width="200" height="130"></div>
+            <div class="column"></div>
+          </div>
+          <div class="three column row">
+            <div class="column"></div>
+            <div class="column center aligned"><h1 class="ui header">Cisco Capital Flexible Billing Tool</h1></div>
+            <div class="column"></div>
+          </div>
+          <div class="one column row">
+            <div class="column center aligned">
+              <div class="ui steps">
+                <a class="step">
+                  <div class="content">
+                    <div class="title">HX - Step 1</div>
+                    <div class="description">vCenter Details</div>
+                  </div>
+                </a>
+                <a class="step">
+                  <div class="content">
+                    <div class="title">HX - Step 2</div>
+                    <div class="description">vCenter Datacenter Selection</div>
+                  </div>
+                </a>
+                <a class="step">
+                  <div class="content">
+                    <div class="title">HX - Step 3</div>
+                    <div class="description">vCenter Cluster Selection</div>
+                  </div>
+                </a>
+                <a class="step">
+                  <div class="content">
+                    <div class="title">HX - Step 4</div>
+                    <div class="description">Cisco Contract Details</div>
+                  </div>
+                </a>
+                <a class="active step">
+                  <i class="info circle icon"></i>
+                  <div class="content">
+                    <div class="title">HX - Step 5</div>
+                    <div class="description">Confirmation of details</div>
+                  </div>
+                </a>
+                <a class="step">
+                  <div class="content">
+                    <div class="title">HX - Step 6</div>
+                    <div class="description">Validation against Cisco Capital</div>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="three column row">
+            <div class="column"></div>
+            <div class="column center aligned" style="margin-top:40px;"><h2 class="ui header">Please confirm the below details are correct.</h2></div>
+            <div class="column"></div>
+          </div>
+          <div class="three column row mt-4">
+            <div class="column"></div>
+            <div class="column center aligned" style="margin-top:0.75rem;">
+              {{.url}}<br>
+              {{.username}}<br>
+              {{.password}}<br>
+              {{.secure}}<br>
+              {{.datacenter}}<br>
+              {{.cluster}}<br>
+              {{.contract}}<br>
+            </div>
+            <div class="column"></div>
+          </div>
+          <div class="three column row">
+            <div class="column"></div>
+            <div class="column center aligned"><button class="ui primary submit button" type="submit" name="confirm" value="confirm">Confirm Details</button></div>
+            <div class="column"></div>
+          </div>
+          <div class="three column row">
+            <div class="column"></div>
+            <div class="column center aligned"><div class="ui error message"></div></div>
+            <div class="column"></div>
+          </div>
+        </div>
+      </form>
+      <script src="public/jquery.3.3.1.min.js"></script>
+      <script src="public/semantic.2.3.1.min.js"></script>
+      <script>
+      $(document).ready(function(){
+        $('.ui.checkbox').checkbox();
+        $('.ui.form')
+      });
+      </script>
+  </body>
+</html>
