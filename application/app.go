@@ -23,7 +23,7 @@ import (
 )
 
 const (
-	VERSION                  = "0.2.0"
+	VERSION                  = "0.5.0"
 	METRICKEY                = "NNDOBIXNSfWeKjE7TSyvPbgAFHXL6xSR"
 	METRICSERVER             = "http://localhost:5003"
 	DBPATH                   = "data.db"
@@ -132,9 +132,7 @@ func New() *Application {
 func (a *Application) setupCheckers() {
 	a.Checkers.URLS.AddChecker("Cisco", url.NewChecker("https://www.cisco.com/"))
 	a.Checkers.URLS.AddChecker("Capital", url.NewChecker(a.HX.Credentials.Url +"/health"))
-	fmt.Println(a.HX.Credentials.Url +"/health")
-
-    a.Checkers.Handler.AddChecker("Tests", a.Checkers.URLS)
+	a.Checkers.Handler.AddChecker("Tests", a.Checkers.URLS)
 }
 
 func (a *Application) DEBUGOverrideLocalHXServer(server string) {

@@ -5,6 +5,7 @@
 // https://github.com/tidwall/sjson
 
 // git tag -a v0.2.3 -m "First release"
+// git tag -fa v0.2.3
 // git push origin v0.2.3
 // goreleaser
 

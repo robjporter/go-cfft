@@ -3,11 +3,14 @@ package application
 import (
 	"time"
 
+	"../packages/uuid"
+
 	"github.com/Sirupsen/logrus"
 	"github.com/timshannon/bolthold"
 )
 
-type MetricData struct {
+type MetricData struct { 
+	UUID string
 	CollectionTime           time.Time
 	CollectionDuration       string
 	Submitted                bool
@@ -27,6 +30,11 @@ func (a *Application) gatherAndRecordMetrics() {
 	var metrics MetricData
 	metrics.Submitted = false
 	metrics.CollectionTime = time.Now()
+	u2, err := uuid.NewV4()
+	if err != nil {
+		a.Logger.Warn("There was an error producing a UUID for this update.  Therefore it will not be submitted.")
+	}
+	metrics.UUID = u2.String()
 
 	if a.metricGetToken() {
 		metrics.About = a.metricGetAbout()
