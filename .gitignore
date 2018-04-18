@@ -7,4 +7,4 @@ data.db
 backup/
 dist/
 packages/.DS_Store
-packages/.DS_Store
+output/
