@@ -33,8 +33,10 @@ func (a *Application) gatherAndRecordMetrics() {
 	u2, err := uuid.NewV4()
 	if err != nil {
 		a.Logger.Warn("There was an error producing a UUID for this update.  Therefore it will not be submitted.")
+		metrics.UUID = "FAILED-TO-GENERATE-UUID-" + string(time.Now().Unix())
+	} else {
+		metrics.UUID = u2.String()
 	}
-	metrics.UUID = u2.String()
 
 	if a.metricGetToken() {
 		metrics.About = a.metricGetAbout()

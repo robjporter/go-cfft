@@ -3,6 +3,7 @@
 // https://github.com/leekchan/accounting
 // https://github.com/tidwall/gjson
 // https://github.com/tidwall/sjson
+// https://github.com/inconshreveable/go-update
 
 // git tag -a v0.2.3 -m "First release"
 // git tag -fa v0.2.3

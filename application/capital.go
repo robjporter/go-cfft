@@ -61,10 +61,6 @@ func (a *Application) updateOnsiteIndexPage() {
 }
 
 func (a *Application) submitInformationToCapital(id string, json string) {
-	fmt.Println("submitInformationToCapital========================================================")
-	fmt.Println(id)
-	fmt.Println("submitInformationToCapital========================================================")
-
 	code := "DONE"
 	if a.updateMetricRecordAfterSubmission(code,id) == nil {
 		a.Logger.WithFields(logrus.Fields{"Metric ID":id,"Transaction Code":code}).Debug("Successfully submitted metrics to Capital.")

@@ -84,7 +84,7 @@ func (a *Application) routesHomeHXSetup5(c echo.Context) error {
       if a.HX.GetResponseCode() == 201 {
         success = true 
         a.LastError = nil
-        a.saveAllData()
+        a.saveCredentialsDataToDB()
       } else {
         a.LastError = errors.New("We recevied a response other than 201 as expected.")
         a.Logger.WithFields(logrus.Fields{"Error":err,"Code":a.HX.GetResponseCode()}).Debug("We received an error and cannot continue.")
