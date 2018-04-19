@@ -11,11 +11,11 @@ const (
 	DBPATH                   = "data.db"
 	PORT                     = 1323
 	TIMERINVENTORY           = 1
-	TIMERINVENTORYSUBMISSION = 1
+	TIMERINVENTORYSUBMISSION = 2
 	TIMEROUT                 = 10
-	TIMEREGENERATION = 5
-	TIMERREGENERATEINDEX 	 = time.Duration(TIMEREGENERATION) * time.Minute
+	TIMEREGENERATION         = 5
+	TIMERREGENERATEINDEX     = time.Duration(TIMEREGENERATION) * time.Minute
 	TIMERGATHERSTAT          = time.Duration(TIMERINVENTORY) * time.Minute
-	TIMERSUBMITMETRICS       = time.Duration(2) * time.Minute //time.Duration(TIMERINVENTORYSUBMISSION) * time.Hour
+	TIMERSUBMITMETRICS       = time.Duration(TIMERINVENTORYSUBMISSION) * time.Minute //time.Duration(TIMERINVENTORYSUBMISSION) * time.Hour
 	DATAOUTPUTFOLDER         = "output/"
 )

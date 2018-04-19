@@ -26,5 +26,5 @@ func (a *Application) setupCronJobs() {
 		a.Logger.WithFields(logrus.Fields{"Task Number": counter, "Task Title": "Updating Index Page with latest metrics."}).Debug("Task finished now.")
 
 	}))
-	a.Logger.WithFields(logrus.Fields{"Task Jobs": 3}).Debug("Completed setting up Cron jobs.")
+	a.Logger.WithFields(logrus.Fields{"Task Jobs": len(a.Crons.Entries())}).Debug("Completed setting up Cron jobs.")
 }

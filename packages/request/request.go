@@ -2,6 +2,7 @@ package request
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -13,7 +14,6 @@ import (
 	"os"
 	"strings"
 	"time"
-  "crypto/tls"
 
 	"github.com/go-http-utils/headers"
 	"golang.org/x/net/proxy"
@@ -150,7 +150,6 @@ func Delete(URL string) *Client {
 // element value. It replaces any existing values associated with key.
 func (c *Client) Set(key, value string) *Client {
 	c.header.Set(key, value)
-
 	return c
 }
 
@@ -287,7 +286,6 @@ func (c *Client) CookieJar(jar http.CookieJar) *Client {
 // interrupt reading of the response body.
 func (c *Client) Timeout(timeout time.Duration) *Client {
 	c.cli.Timeout = timeout
-
 	return c
 }
 
@@ -365,12 +363,11 @@ func (c *Client) Proxy(addr string) *Client {
 		return c
 	}
 
-
 	switch u.Scheme {
 	case "http", "https":
 		c.cli.Transport = &http.Transport{
-			Proxy: http.ProxyURL(u),
-      TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+			Proxy:           http.ProxyURL(u),
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 			DialContext: (&net.Dialer{
 				Timeout:   30 * time.Second,
 				KeepAlive: 30 * time.Second,
@@ -388,7 +385,7 @@ func (c *Client) Proxy(addr string) *Client {
 		c.cli.Transport = &http.Transport{
 			Proxy:               http.ProxyFromEnvironment,
 			Dial:                dialer.Dial,
-      TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+			TLSClientConfig:     &tls.Config{InsecureSkipVerify: true},
 			TLSHandshakeTimeout: 10 * time.Second,
 		}
 	}
@@ -459,7 +456,6 @@ func (c *Client) JSON(v ...interface{}) (interface{}, error) {
 	if _, err := c.End(); err != nil {
 		return nil, err
 	}
-
 	return c.res.JSON(v...)
 }
 
@@ -468,7 +464,6 @@ func (c *Client) Text() (string, error) {
 	if _, err := c.End(); err != nil {
 		return "", err
 	}
-
 	return c.res.Text()
 }
 
@@ -534,15 +529,15 @@ func (c *Client) ResponseReason() string {
 	return c.res.Reason()
 }
 
-func (c *Client) ResponseData() string {//map[string]interface{} {
-	j,e := c.res.Text()
+func (c *Client) ResponseData() string { //map[string]interface{} {
+	j, e := c.res.Text()
 	if e == nil {
 		return j
 	}
 	return ""
 }
 
-func (c *Client) ResponseDataItem(item string) (interface{}) {
+func (c *Client) ResponseDataItem(item string) interface{} {
 	data := c.ResponseData()
 	if data != "" {
 		if gjson.Valid(data) {
@@ -554,7 +549,7 @@ func (c *Client) ResponseDataItem(item string) (interface{}) {
 	return nil
 }
 
-func (c *Client) ResponseDataItemString(item string) (string) {
+func (c *Client) ResponseDataItemString(item string) string {
 	data := c.ResponseData()
 	if data != "" {
 		if gjson.Valid(data) {
@@ -566,7 +561,7 @@ func (c *Client) ResponseDataItemString(item string) (string) {
 	return ""
 }
 
-func (c *Client) ResponseDataItemInt(item string) (int) {
+func (c *Client) ResponseDataItemInt(item string) int {
 	data := c.ResponseData()
 	if data != "" {
 		if gjson.Valid(data) {
@@ -578,7 +573,7 @@ func (c *Client) ResponseDataItemInt(item string) (int) {
 	return -1
 }
 
-func (c *Client) ResponseDataItemInt64(item string) (int64) {
+func (c *Client) ResponseDataItemInt64(item string) int64 {
 	data := c.ResponseData()
 	if data != "" {
 		if gjson.Valid(data) {
@@ -590,7 +585,7 @@ func (c *Client) ResponseDataItemInt64(item string) (int64) {
 	return -1
 }
 
-func (c *Client) ResponseDataItemFloat(item string) (float64) {
+func (c *Client) ResponseDataItemFloat(item string) float64 {
 	data := c.ResponseData()
 	if data != "" {
 		if gjson.Valid(data) {
@@ -602,7 +597,7 @@ func (c *Client) ResponseDataItemFloat(item string) (float64) {
 	return -1
 }
 
-func (c *Client) ResponseDataItemBool(item string) (bool) {
+func (c *Client) ResponseDataItemBool(item string) bool {
 	data := c.ResponseData()
 	if data != "" {
 		if gjson.Valid(data) {
@@ -614,7 +609,7 @@ func (c *Client) ResponseDataItemBool(item string) (bool) {
 	return false
 }
 
-func (c *Client) ResponseDataItemTime(item string) (time.Time) {
+func (c *Client) ResponseDataItemTime(item string) time.Time {
 	data := c.ResponseData()
 	if data != "" {
 		if gjson.Valid(data) {

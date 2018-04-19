@@ -36,7 +36,7 @@ type MetricInfo struct {
 }
 
 func (a *Application) metricGetClusterInfo() *[]MetricInfo {
-	err := a.HX.ClusterInfo()
+	res,err := a.HX.ClusterInfo()
 
 	if err != nil {
 		a.Logger.Debug("We were unable to collect the cluster information from HX Connect API.")
@@ -44,45 +44,45 @@ func (a *Application) metricGetClusterInfo() *[]MetricInfo {
 		return &[]MetricInfo{}
 	}
 
-	if a.HX.GetResponseOK() {
-		if a.HX.GetResponseCode() == 200 {
+	if a.HX.GetResponseOK(res) {
+		if a.HX.GetResponseCode(res) == 200 {
 			var data []MetricInfo
 			a.Logger.Debug("Querying HX Connect for Cluster information.")
-			count := a.HX.GetResponseItemInt("#")
+			count := a.HX.GetResponseItemInt(res,"#")
 			for i := 0; i < count; i++ {
 				var tmp MetricInfo
-				tmp.ClusterName = a.HX.GetResponseItemString(strconv.Itoa(i) + ".config.name")
-				tmp.VcenterDCName = a.HX.GetResponseItemString(strconv.Itoa(i) + ".config.vCenterDatacenter")
-				tmp.VcenterClusterName = a.HX.GetResponseItemString(strconv.Itoa(i) + ".config.vCenterClusterName")
-				tmp.UCSMOrgName = a.HX.GetResponseItemString(strconv.Itoa(i) + ".config.ucsmOrg")
-				tmp.ClusterState = a.HX.GetResponseItemString(strconv.Itoa(i) + ".cluster.state")
+				tmp.ClusterName = a.HX.GetResponseItemString(res,strconv.Itoa(i) + ".config.name")
+				tmp.VcenterDCName = a.HX.GetResponseItemString(res,strconv.Itoa(i) + ".config.vCenterDatacenter")
+				tmp.VcenterClusterName = a.HX.GetResponseItemString(res,strconv.Itoa(i) + ".config.vCenterClusterName")
+				tmp.UCSMOrgName = a.HX.GetResponseItemString(res,strconv.Itoa(i) + ".config.ucsmOrg")
+				tmp.ClusterState = a.HX.GetResponseItemString(res,strconv.Itoa(i) + ".cluster.state")
 
-				tmp.ClusterNodeSize = a.HX.GetResponseItemInt(strconv.Itoa(i) + ".stNodesSize")
-				tmp.ClusterNodesActive = a.HX.GetResponseItemInt(strconv.Itoa(i) + ".cluster.activeNodes")
-				tmp.ClusterModelNumbers = a.HX.GetResponseItemString(strconv.Itoa(i) + ".about.modelNumber")
-				tmp.ClusterSerialNumbers = a.HX.GetResponseItemString(strconv.Itoa(i) + ".about.serialNumber")
-				tmp.ClusterUpgradeState = a.HX.GetResponseItemString(strconv.Itoa(i) + ".upgradeState")
+				tmp.ClusterNodeSize = a.HX.GetResponseItemInt(res,strconv.Itoa(i) + ".stNodesSize")
+				tmp.ClusterNodesActive = a.HX.GetResponseItemInt(res,strconv.Itoa(i) + ".cluster.activeNodes")
+				tmp.ClusterModelNumbers = a.HX.GetResponseItemString(res,strconv.Itoa(i) + ".about.modelNumber")
+				tmp.ClusterSerialNumbers = a.HX.GetResponseItemString(res,strconv.Itoa(i) + ".about.serialNumber")
+				tmp.ClusterUpgradeState = a.HX.GetResponseItemString(res,strconv.Itoa(i) + ".upgradeState")
 
-				boot := a.HX.GetResponseItemInt64(strconv.Itoa(i) + ".cluster.boottime")
+				boot := a.HX.GetResponseItemInt64(res,strconv.Itoa(i) + ".cluster.boottime")
 				tmp.ClusterUptime = hxconnect.DiffString(boot)
 				tmp.ClusterBootTime = time.Unix(boot, 0)
 
-				tmp.ClusterRawCapacity = a.HX.GetResponseItemFloat(strconv.Itoa(i) + ".cluster.rawCapacity")
-				tmp.ClusterCapacity = a.HX.GetResponseItemFloat(strconv.Itoa(i) + ".cluster.capacity")
-				tmp.ClusterUsedCapacity = a.HX.GetResponseItemFloat(strconv.Itoa(i) + ".cluster.usedCapacity")
-				tmp.ClusterFreeCapacity = a.HX.GetResponseItemFloat(strconv.Itoa(i) + ".cluster.freeCapacity")
+				tmp.ClusterRawCapacity = a.HX.GetResponseItemFloat(res,strconv.Itoa(i) + ".cluster.rawCapacity")
+				tmp.ClusterCapacity = a.HX.GetResponseItemFloat(res,strconv.Itoa(i) + ".cluster.capacity")
+				tmp.ClusterUsedCapacity = a.HX.GetResponseItemFloat(res,strconv.Itoa(i) + ".cluster.usedCapacity")
+				tmp.ClusterFreeCapacity = a.HX.GetResponseItemFloat(res,strconv.Itoa(i) + ".cluster.freeCapacity")
 
-				tmp.ClusterDowntime = a.HX.GetResponseItemFloat(strconv.Itoa(i) + ".cluster.downtime")
-				tmp.ClusterAllFlash = a.HX.GetResponseItemBool(strconv.Itoa(i) + ".cluster.allFlash")
-				tmp.ClusterRF = a.HX.GetResponseItemInt(strconv.Itoa(i) + ".config.dataReplicationFactor")
-				tmp.ClusterPolicy = a.HX.GetResponseItemString(strconv.Itoa(i) + ".config.clusterAccessPolicy")
+				tmp.ClusterDowntime = a.HX.GetResponseItemFloat(res,strconv.Itoa(i) + ".cluster.downtime")
+				tmp.ClusterAllFlash = a.HX.GetResponseItemBool(res,strconv.Itoa(i) + ".cluster.allFlash")
+				tmp.ClusterRF = a.HX.GetResponseItemInt(res,strconv.Itoa(i) + ".config.dataReplicationFactor")
+				tmp.ClusterPolicy = a.HX.GetResponseItemString(res,strconv.Itoa(i) + ".config.clusterAccessPolicy")
 
 				data = append(data, tmp)
 			}
 			a.Logger.WithFields(logrus.Fields{"Cluster Count": count}).Debug("Querying HX Connect for Cluster information complete.")
 			return &data
 		}
-		a.Logger.WithFields(logrus.Fields{"ResponseCode": a.HX.GetResponseCode()}).Warning("An unexpected response code was received for Cluster information.")
+		a.Logger.WithFields(logrus.Fields{"ResponseCode": a.HX.GetResponseCode(res)}).Warning("An unexpected response code was received for Cluster information.")
 	} else {
 		a.Logger.WithFields(logrus.Fields{"ResponseOK": false}).Warning("We received a failed attempt at connecting to the Cluster endpoint.")
 	}

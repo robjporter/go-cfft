@@ -1,10 +1,9 @@
 .DS_Store
-packages/.DS_Store
 */.DS_Store
 *.code-workspace
 *.db
 data.db
 backup/
 dist/
-packages/.DS_Store
 output/
+packages/.DS_Store

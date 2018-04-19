@@ -16,7 +16,7 @@ type MetricSavings struct {
 }
 
 func (a *Application) metricGetSavings() (*MetricSavings, *MetricNodes) {
-	err := a.HX.ClusterSavings()
+	res,err := a.HX.ClusterSavings()
 
 	if err != nil {
 		a.Logger.Debug("We were unable to collect the savings information from HX Connect API.")
@@ -24,13 +24,13 @@ func (a *Application) metricGetSavings() (*MetricSavings, *MetricNodes) {
 		return &MetricSavings{}, &MetricNodes{}
 	}
 
-	if a.HX.GetResponseOK() {
-		if a.HX.GetResponseCode() == 200 {
+	if a.HX.GetResponseOK(res) {
+		if a.HX.GetResponseCode(res) == 200 {
 			var metric MetricSavings
 			var nodes MetricNodes
 			var nodess []MetricNode
 			a.Logger.Debug("Querying HX Connect for Savings information.")
-			tmp := strings.TrimLeft(a.HX.GetResponseData().(string), "{")
+			tmp := strings.TrimLeft(a.HX.GetResponseData(res).(string), "{")
 			tmp = strings.TrimRight(tmp, "}")
 			result := gjson.Get(tmp, "..#").String()
 			num, err := strconv.Atoi(result)
@@ -64,7 +64,7 @@ func (a *Application) metricGetSavings() (*MetricSavings, *MetricNodes) {
 			a.Logger.WithFields(logrus.Fields{"Nodes Count": (num - 2) / 2}).Debug("Querying HX Connect for Savings information complete.")
 			return &metric, &nodes
 		}
-		a.Logger.WithFields(logrus.Fields{"ResponseCode": a.HX.GetResponseCode()}).Warning("An unexpected response code was received for Savings information.")
+		a.Logger.WithFields(logrus.Fields{"ResponseCode": a.HX.GetResponseCode(res)}).Warning("An unexpected response code was received for Savings information.")
 	} else {
 		a.Logger.WithFields(logrus.Fields{"ResponseOK": false}).Warning("We received a failed attempt at connecting to the Savings endpoint.")
 	}

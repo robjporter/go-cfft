@@ -11,7 +11,7 @@ type MetricAbout struct {
 }
 
 func (a *Application) metricGetAbout() *MetricAbout {
-	err := a.HX.About()
+	res,err := a.HX.About()
 
 	if err != nil {
 		a.Logger.Debug("We were unable to collect the about information from HX Connect API.")
@@ -19,15 +19,15 @@ func (a *Application) metricGetAbout() *MetricAbout {
 		return &MetricAbout{}
 	}
 
-	if a.HX.GetResponseOK() {
-		if a.HX.GetResponseCode() == 200 {
+	if a.HX.GetResponseOK(res) {
+		if a.HX.GetResponseCode(res) == 200 {
 			a.Logger.Debug("Querying HX Connect for About information.")
 
-			build := a.HX.GetResponseItemString("build")
-			dversion := a.HX.GetResponseItemString("displayVersion")
-			instance := a.HX.GetResponseItemString("instanceUuid")
-			locale := a.HX.GetResponseItemString("locale")
-			version := a.HX.GetResponseItemString("productVersion")
+			build := a.HX.GetResponseItemString(res,"build")
+			dversion := a.HX.GetResponseItemString(res,"displayVersion")
+			instance := a.HX.GetResponseItemString(res,"instanceUuid")
+			locale := a.HX.GetResponseItemString(res,"locale")
+			version := a.HX.GetResponseItemString(res,"productVersion")
 
 			a.Logger.WithFields(logrus.Fields{"Build": build, "DisplayVersion": dversion, "Locale": locale, "Version": version}).Debug("Querying HX Connect for About information complete.")
 
@@ -39,7 +39,7 @@ func (a *Application) metricGetAbout() *MetricAbout {
 				Version:  version,
 			}
 		}
-		a.Logger.WithFields(logrus.Fields{"ResponseCode": a.HX.GetResponseCode()}).Warning("An unexpected response code was received for About information.")
+		a.Logger.WithFields(logrus.Fields{"ResponseCode": a.HX.GetResponseCode(res)}).Warning("An unexpected response code was received for About information.")
 	} else {
 		a.Logger.WithFields(logrus.Fields{"ResponseOK": false}).Warning("We received a failed attempt at connecting to the About endpoint.")
 	}
