@@ -33,36 +33,36 @@ type MetricDatastores struct {
 }
 
 func (a *Application) metricGetDatastores() *MetricDatastores {
-	res,err := a.HX.ClusterDatastores()
+	res, err := a.HX.ClusterDatastores()
 
 	if err != nil {
-		a.Logger.Debug("We were unable to collect the Datastore information from HX Connect API.")
+		a.Logger.WithFields(logrus.Fields{"Task Number": a.Stats.GetCounter("tasks")}).Debug("We were unable to collect the Datastore information from HX Connect API.")
 		a.LastError = err
 		return &MetricDatastores{}
 	}
 
 	if a.HX.GetResponseOK(res) {
 		if a.HX.GetResponseCode(res) == 200 {
-			a.Logger.Debug("Querying HX Connect for Datastore information.")
+			a.Logger.WithFields(logrus.Fields{"Task Number": a.Stats.GetCounter("tasks")}).Debug("Querying HX Connect for Datastore information.")
 			var metric MetricDatastores
 			var dss []MetricDatastore
-			metric.DatastoreCount = a.HX.GetResponseItemInt(res,"#")
+			metric.DatastoreCount = a.HX.GetResponseItemInt(res, "#")
 			for i := 0; i < metric.DatastoreCount; i++ {
 				var ds MetricDatastore
 
-				ds.DatastoreID = a.HX.GetResponseItemString(res,strconv.Itoa(i) + ".stPlatDatastore.entityRef.id")
-				ds.DatastoreType = a.HX.GetResponseItemString(res,strconv.Itoa(i) + ".stPlatDatastore.entityRef.type")
-				ds.DatastoreName = a.HX.GetResponseItemString(res,strconv.Itoa(i) + ".stPlatDatastore.entityRef.name")
-				ds.DatastoreVirtualName = a.HX.GetResponseItemString(res,strconv.Itoa(i) + ".stPlatDatastore.virtDatastore.id")
-				ds.DatastoreCapacity = a.HX.GetResponseItemInt64(res,strconv.Itoa(i) + ".stPlatDatastore.config.capacity")
-				ds.DatastoreNumMirrors = a.HX.GetResponseItemInt(res,strconv.Itoa(i) + ".stPlatDatastore.config.numMirrors")
-				ds.DatastoreCreationTime = a.HX.GetResponseItemInt64(res,strconv.Itoa(i) + ".stPlatDatastore.creationTime")
-				ds.DatastoreFreeCapacity = a.HX.GetResponseItemInt64(res,strconv.Itoa(i) + ".stPlatDatastore.freeCapacity")
-				ds.DatastoreUnsharedBytes = a.HX.GetResponseItemInt64(res,strconv.Itoa(i) + ".stPlatDatastore.unsharedUsedBytes")
-				ds.DatastoreUncompressedBytes = a.HX.GetResponseItemInt64(res,strconv.Itoa(i) + ".stPlatDatastore.unCompressedUsedBytes")
-				ds.DatastoreVirtualMountSummary = getDatastoreMountSummary(a.HX.GetResponseItemString(res,strconv.Itoa(i) + ".virtDatastore.mountSummary"))
-				ds.DatastoreVirtualAccessibleSummary = getDatastoreAccessible(a.HX.GetResponseItemString(res,strconv.Itoa(i) + ".virtDatastore.accessibilitySummary"))
-				ds.DatastoreReplicationDatastorePaired = getDatastoreReplication(a.HX.GetResponseItemString(res,strconv.Itoa(i) + ".replDatastore.paired"))
+				ds.DatastoreID = a.HX.GetResponseItemString(res, strconv.Itoa(i)+".stPlatDatastore.entityRef.id")
+				ds.DatastoreType = a.HX.GetResponseItemString(res, strconv.Itoa(i)+".stPlatDatastore.entityRef.type")
+				ds.DatastoreName = a.HX.GetResponseItemString(res, strconv.Itoa(i)+".stPlatDatastore.entityRef.name")
+				ds.DatastoreVirtualName = a.HX.GetResponseItemString(res, strconv.Itoa(i)+".stPlatDatastore.virtDatastore.id")
+				ds.DatastoreCapacity = a.HX.GetResponseItemInt64(res, strconv.Itoa(i)+".stPlatDatastore.config.capacity")
+				ds.DatastoreNumMirrors = a.HX.GetResponseItemInt(res, strconv.Itoa(i)+".stPlatDatastore.config.numMirrors")
+				ds.DatastoreCreationTime = a.HX.GetResponseItemInt64(res, strconv.Itoa(i)+".stPlatDatastore.creationTime")
+				ds.DatastoreFreeCapacity = a.HX.GetResponseItemInt64(res, strconv.Itoa(i)+".stPlatDatastore.freeCapacity")
+				ds.DatastoreUnsharedBytes = a.HX.GetResponseItemInt64(res, strconv.Itoa(i)+".stPlatDatastore.unsharedUsedBytes")
+				ds.DatastoreUncompressedBytes = a.HX.GetResponseItemInt64(res, strconv.Itoa(i)+".stPlatDatastore.unCompressedUsedBytes")
+				ds.DatastoreVirtualMountSummary = getDatastoreMountSummary(a.HX.GetResponseItemString(res, strconv.Itoa(i)+".virtDatastore.mountSummary"))
+				ds.DatastoreVirtualAccessibleSummary = getDatastoreAccessible(a.HX.GetResponseItemString(res, strconv.Itoa(i)+".virtDatastore.accessibilitySummary"))
+				ds.DatastoreReplicationDatastorePaired = getDatastoreReplication(a.HX.GetResponseItemString(res, strconv.Itoa(i)+".replDatastore.paired"))
 
 				dss = append(dss, ds)
 
@@ -79,12 +79,13 @@ func (a *Application) metricGetDatastores() *MetricDatastores {
 				}
 			}
 			metric.DS = &dss
-			a.Logger.WithFields(logrus.Fields{}).Debug("Querying HX Connect for Datastore information complete.")
+
+			a.Logger.WithFields(logrus.Fields{"Task Number": a.Stats.GetCounter("tasks")}).Debug("Querying HX Connect for Datastore information complete.")
 			return &metric
 		}
-		a.Logger.WithFields(logrus.Fields{"ResponseCode": a.HX.GetResponseCode(res)}).Warning("An unexpected response code was received for Datastore information.")
+		a.Logger.WithFields(logrus.Fields{"Task Number": a.Stats.GetCounter("tasks"), "ResponseCode": a.HX.GetResponseCode(res)}).Warning("An unexpected response code was received for Datastore information.")
 	} else {
-		a.Logger.WithFields(logrus.Fields{"ResponseOK": false}).Warning("We received a failed attempt at connecting to the Datastore endpoint.")
+		a.Logger.WithFields(logrus.Fields{"Task Number": a.Stats.GetCounter("tasks"), "ResponseOK": false}).Warning("We received a failed attempt at connecting to the Datastore endpoint.")
 	}
 	return &MetricDatastores{}
 }

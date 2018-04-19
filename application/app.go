@@ -11,13 +11,12 @@ import (
 	"time"
 
 	"../packages/cron"
-	"../packages/hxconnect"
 	"../packages/health"
 	"../packages/health/url"
+	"../packages/hxconnect"
 
 	"github.com/Sirupsen/logrus"
 	"github.com/labstack/echo"
-
 )
 
 var (
@@ -60,7 +59,7 @@ func New() *Application {
 
 	app.HX.Metrics.Server = METRICSERVER
 	app.HX.Metrics.Key = METRICKEY
-	app.Logger.WithFields(logrus.Fields{"Task Number":app.Stats.GetCounter("task")}).Debug("Initialisation complete.")
+	app.Logger.WithFields(logrus.Fields{"Task Number": app.Stats.GetCounter("tasks")}).Debug("Initialisation complete.")
 
 	app.setupServer()
 	app.setupErrorHandler()
@@ -71,33 +70,33 @@ func New() *Application {
 
 func (a *Application) setupCheckers() {
 	a.Checkers.URLS.AddChecker("Cisco", url.NewChecker("https://www.cisco.com/"))
-	a.Checkers.URLS.AddChecker("Capital", url.NewChecker(a.HX.Credentials.Url +"/health"))
+	a.Checkers.URLS.AddChecker("Capital", url.NewChecker(a.HX.Credentials.Url+"/health"))
 	a.Checkers.Handler.AddChecker("Tests", a.Checkers.URLS)
 }
 
 func (a *Application) Start() {
 	a.db.dbpath = DBPATH
 	if !isFile(a.db.dbpath) {
-		a.Logger.WithFields(logrus.Fields{"Task Number":a.Stats.GetCounter("task")}).Debug("This looks like the first time the application has been run or is being reinitialised.")
+		a.Logger.WithFields(logrus.Fields{"Task Number": a.Stats.GetCounter("tasks")}).Debug("This looks like the first time the application has been run or is being reinitialised.")
 		a.setupSetupRoutes()
 	} else {
-		a.Logger.WithFields(logrus.Fields{"Task Number":a.Stats.GetCounter("task")}).Debug("This looks like the application has been setup.")
+		a.Logger.WithFields(logrus.Fields{"Task Number": a.Stats.GetCounter("tasks")}).Debug("This looks like the application has been setup.")
 		if a.connectToDB(a.db.dbpath) {
 			a.loadCredentialInformationFromDB()
 			a.setupCronJobs()
 		} else {
-			a.Logger.WithFields(logrus.Fields{"Task Number":a.Stats.GetCounter("task")}).Debug("Failed to connect to DB.")
+			a.Logger.WithFields(logrus.Fields{"Task Number": a.Stats.GetCounter("tasks")}).Debug("Failed to connect to DB.")
 		}
 	}
 
 	a.setupCheckers()
 	a.Crons.Start()
 	a.Server.Debug = true
-	a.Logger.WithFields(logrus.Fields{"Task Number":a.Stats.GetCounter("task")}).Debug("Application running and ready at http://<IP>:." + a.GetServerPort())
+	a.Logger.WithFields(logrus.Fields{"Task Number": a.Stats.GetCounter("tasks")}).Debug("Application running and ready at http://<IP>:." + a.GetServerPort())
 	// Start server
 	go func() {
 		if err := a.Server.Start(":" + a.GetServerPort()); err != nil {
-			a.Logger.WithFields(logrus.Fields{"Task Number":a.Stats.GetCounter("task")}).Info("shutting down the server")
+			a.Logger.WithFields(logrus.Fields{"Task Number": a.Stats.GetCounter("tasks")}).Info("shutting down the server")
 		}
 	}()
 
@@ -111,19 +110,17 @@ func (a *Application) Start() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	if err := a.Server.Shutdown(ctx); err != nil {
-		a.Logger.WithFields(logrus.Fields{"Task Number":a.Stats.GetCounter("task")}).Fatal(err)
+		a.Logger.WithFields(logrus.Fields{"Task Number": a.Stats.GetCounter("tasks")}).Fatal(err)
 	}
 	a.Stop()
 }
 
 func (a *Application) Stop() {
-	a.Logger.WithFields(logrus.Fields{"Task Number":a.Stats.GetCounter("task")}).Debug("Stopping all services.")
+	a.Logger.WithFields(logrus.Fields{"Task Number": a.Stats.GetCounter("tasks")}).Debug("Stopping all services.")
 	a.db.data.Close()
 	a.Crons.Stop()
-	a.Logger.WithFields(logrus.Fields{"Task Number":a.Stats.GetCounter("task")}).Debug("Successfully finished stopping all services.")
+	a.Logger.WithFields(logrus.Fields{"Task Number": a.Stats.GetCounter("tasks")}).Debug("Successfully finished stopping all services.")
 }
-
-
 
 func (a *Application) GetServerPort() string {
 	return strconv.Itoa(a.Port)
@@ -132,10 +129,3 @@ func (a *Application) GetServerPort() string {
 func (a *Application) SetServerPort(port int) {
 	a.Port = port
 }
-
-
-
-
-
-
-

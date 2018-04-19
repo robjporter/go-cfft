@@ -45,45 +45,45 @@ type MetricVirtualMachines struct {
 }
 
 func (a *Application) metricGetVirtualMachines() *MetricVirtualMachines {
-	res,err := a.HX.ClusterVM()
+	res, err := a.HX.ClusterVM()
 
 	if err != nil {
-		a.Logger.Debug("We were unable to collect the Virtual Machine information from HX Connect API.")
+		a.Logger.WithFields(logrus.Fields{"Task Number": a.Stats.GetCounter("tasks")}).Debug("We were unable to collect the Virtual Machine information from HX Connect API.")
 		a.LastError = err
 		return &MetricVirtualMachines{}
 	}
 
 	if a.HX.GetResponseOK(res) {
 		if a.HX.GetResponseCode(res) == 200 {
-			a.Logger.Debug("Querying HX Connect for Virtual Machine information.")
+			a.Logger.WithFields(logrus.Fields{"Task Number": a.Stats.GetCounter("tasks")}).Debug("Querying HX Connect for Virtual Machine information.")
 			var metric MetricVirtualMachines
 			var vms []MetricVirtualMachine
-			metric.VMCount = a.HX.GetResponseItemInt(res,"#")
+			metric.VMCount = a.HX.GetResponseItemInt(res, "#")
 			for i := 0; i < metric.VMCount; i++ {
 				var vm MetricVirtualMachine
 
-				vm.ConnectionState = getConnectionStateBool(a.HX.GetResponseItemString(res,strconv.Itoa(i) + ".runtime?connectionState"))
-				vm.CPUNumber = a.HX.GetResponseItemInt(res,strconv.Itoa(i) + ".config?hardware?numCPU")
-				vm.FullName = a.HX.GetResponseItemString(res,strconv.Itoa(i) + ".config?guestFullName")
-				vm.Group = a.HX.GetResponseItemString(res,strconv.Itoa(i) + ".parent")
-				vm.GuestID = a.HX.GetResponseItemString(res,strconv.Itoa(i) + ".config?guestId")
-				vm.GuestOS = a.HX.GetResponseItemString(res,strconv.Itoa(i) + ".guest?guestFamily")
-				vm.GuestState = getGuestStateBool(a.HX.GetResponseItemString(res,strconv.Itoa(i) + ".guest?guestState"))
-				vm.Host = a.HX.GetResponseItemString(res,strconv.Itoa(i) + ".runtime?host")
-				vm.ID = a.HX.GetResponseItemString(res,strconv.Itoa(i) + ".id")
-				vm.InstanceID = a.HX.GetResponseItemString(res,strconv.Itoa(i) + ".config?instanceUuid")
-				vm.IPAddress = a.HX.GetResponseItemString(res,strconv.Itoa(i) + ".guest?ipAddress")
-				vm.MemoryMB = a.HX.GetResponseItemInt64(res,strconv.Itoa(i) + ".config?hardware?memoryMB")
-				vm.MemoryUsage = a.HX.GetResponseItemInt64(res,strconv.Itoa(i) + ".summary?quickStats?guestMemoryUsage")
-				vm.Name = a.HX.GetResponseItemString(res,strconv.Itoa(i) + ".name")
-				vm.OverallCPUUsage = a.HX.GetResponseItemInt64(res,strconv.Itoa(i) + ".summary?quickStats?overallCpuUsage")
-				vm.PathName = a.HX.GetResponseItemString(res,strconv.Itoa(i) + ".summary?config?vmPathName")
-				vm.PowerState = getPowerStateBool(a.HX.GetResponseItemString(res,strconv.Itoa(i) + ".runtime?powerState"))
-				vm.ResourcePool = a.HX.GetResponseItemString(res,strconv.Itoa(i) + ".resourcePool")
-				vm.StorageCommitted = a.HX.GetResponseItemInt64(res,strconv.Itoa(i) + ".summary?storage?committed")
-				vm.StorageUncommited = a.HX.GetResponseItemInt64(res,strconv.Itoa(i) + ".summary?storage?uncommitted")
-				vm.UUID = a.HX.GetResponseItemString(res,strconv.Itoa(i) + ".config?uuid")
-				vm.Version = a.HX.GetResponseItemString(res,strconv.Itoa(i) + ".config?version")
+				vm.ConnectionState = getConnectionStateBool(a.HX.GetResponseItemString(res, strconv.Itoa(i)+".runtime?connectionState"))
+				vm.CPUNumber = a.HX.GetResponseItemInt(res, strconv.Itoa(i)+".config?hardware?numCPU")
+				vm.FullName = a.HX.GetResponseItemString(res, strconv.Itoa(i)+".config?guestFullName")
+				vm.Group = a.HX.GetResponseItemString(res, strconv.Itoa(i)+".parent")
+				vm.GuestID = a.HX.GetResponseItemString(res, strconv.Itoa(i)+".config?guestId")
+				vm.GuestOS = a.HX.GetResponseItemString(res, strconv.Itoa(i)+".guest?guestFamily")
+				vm.GuestState = getGuestStateBool(a.HX.GetResponseItemString(res, strconv.Itoa(i)+".guest?guestState"))
+				vm.Host = a.HX.GetResponseItemString(res, strconv.Itoa(i)+".runtime?host")
+				vm.ID = a.HX.GetResponseItemString(res, strconv.Itoa(i)+".id")
+				vm.InstanceID = a.HX.GetResponseItemString(res, strconv.Itoa(i)+".config?instanceUuid")
+				vm.IPAddress = a.HX.GetResponseItemString(res, strconv.Itoa(i)+".guest?ipAddress")
+				vm.MemoryMB = a.HX.GetResponseItemInt64(res, strconv.Itoa(i)+".config?hardware?memoryMB")
+				vm.MemoryUsage = a.HX.GetResponseItemInt64(res, strconv.Itoa(i)+".summary?quickStats?guestMemoryUsage")
+				vm.Name = a.HX.GetResponseItemString(res, strconv.Itoa(i)+".name")
+				vm.OverallCPUUsage = a.HX.GetResponseItemInt64(res, strconv.Itoa(i)+".summary?quickStats?overallCpuUsage")
+				vm.PathName = a.HX.GetResponseItemString(res, strconv.Itoa(i)+".summary?config?vmPathName")
+				vm.PowerState = getPowerStateBool(a.HX.GetResponseItemString(res, strconv.Itoa(i)+".runtime?powerState"))
+				vm.ResourcePool = a.HX.GetResponseItemString(res, strconv.Itoa(i)+".resourcePool")
+				vm.StorageCommitted = a.HX.GetResponseItemInt64(res, strconv.Itoa(i)+".summary?storage?committed")
+				vm.StorageUncommited = a.HX.GetResponseItemInt64(res, strconv.Itoa(i)+".summary?storage?uncommitted")
+				vm.UUID = a.HX.GetResponseItemString(res, strconv.Itoa(i)+".config?uuid")
+				vm.Version = a.HX.GetResponseItemString(res, strconv.Itoa(i)+".config?version")
 
 				vms = append(vms, vm)
 
@@ -101,12 +101,12 @@ func (a *Application) metricGetVirtualMachines() *MetricVirtualMachines {
 				metric.StorageUncommited += vm.StorageUncommited
 			}
 			metric.VMs = &vms
-			a.Logger.WithFields(logrus.Fields{"Virtual Machines": metric.VMCount, "Powered Machines": metric.PoweredOn, "Committed vCPU": metric.CommittedCPU, "Committed vMemory": metric.CommittedMemory, "Committed Storage": metric.StorageCommitted}).Debug("Querying HX Connect for Virtual Machine information complete.")
+			a.Logger.WithFields(logrus.Fields{"Task Number": a.Stats.GetCounter("tasks"), "Virtual Machines": metric.VMCount, "Powered Machines": metric.PoweredOn, "Committed vCPU": metric.CommittedCPU, "Committed vMemory": metric.CommittedMemory, "Committed Storage": metric.StorageCommitted}).Debug("Querying HX Connect for Virtual Machine information complete.")
 			return &metric
 		}
-		a.Logger.WithFields(logrus.Fields{"ResponseCode": a.HX.GetResponseCode(res)}).Warning("An unexpected response code was received for Virtual Machine information.")
+		a.Logger.WithFields(logrus.Fields{"Task Number": a.Stats.GetCounter("tasks"), "ResponseCode": a.HX.GetResponseCode(res)}).Warning("An unexpected response code was received for Virtual Machine information.")
 	} else {
-		a.Logger.WithFields(logrus.Fields{"ResponseOK": false}).Warning("We received a failed attempt at connecting to the Virtual Machine endpoint.")
+		a.Logger.WithFields(logrus.Fields{"Task Number": a.Stats.GetCounter("tasks"), "ResponseOK": false}).Warning("We received a failed attempt at connecting to the Virtual Machine endpoint.")
 	}
 	return &MetricVirtualMachines{}
 }
