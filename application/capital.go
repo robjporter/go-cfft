@@ -19,7 +19,7 @@ func (a *Application) submitMetricsToCapital() {
 	err := a.db.data.Find(&result, bolthold.Where("Submitted").Eq(false).And("UUID").Ne(""))
 
 	if err == nil {
-		a.Logger.WithFields(logrus.Fields{"Results": len(result)}).Debug("There are some unsubmitted results to be sent to Capital.")
+		a.Logger.WithFields(logrus.Fields{"Results": len(result),"Task Number":a.Stats.GetCounter("task")}).Debug("There are some unsubmitted results to be sent to Capital.")
 
 		for i := 0; i < len(result); i++ {
 			json += a.createJSONFromResult(result[i])
@@ -28,14 +28,14 @@ func (a *Application) submitMetricsToCapital() {
 			a.submitInformationToCapital(result[i].UUID, json)
 		}
 	} else {
-		a.Logger.WithFields(logrus.Fields{"Error": err}).Debug("There has been an error.")
+		a.Logger.WithFields(logrus.Fields{"Error": err,"Task Number":a.Stats.GetCounter("task")}).Debug("There has been an error.")
 	}
 }
 
 func (a *Application) createJSONFromResult(m MetricData) string {
 	tmp, err := json.Marshal(m)
 	if err != nil {
-		a.Logger.WithFields(logrus.Fields{"Error": err}).Debug("There has been an error.")
+		a.Logger.WithFields(logrus.Fields{"Error": err,"Task Number":a.Stats.GetCounter("task")}).Debug("There has been an error.")
 		return ""
 	}
 	return string(tmp)
@@ -50,10 +50,10 @@ func (a *Application) dumpJSONToSendToFile(filename string, json string) bool {
 
 	err := ioutil.WriteFile(filename, []byte(json), os.ModePerm)
 	if err != nil {
-		a.Logger.WithFields(logrus.Fields{"File": filename, "Error": err}).Debug("Failed to save data to file.")
+		a.Logger.WithFields(logrus.Fields{"File": filename, "Error": err,"Task Number":a.Stats.GetCounter("task")}).Debug("Failed to save data to file.")
 		return false
 	}
-	a.Logger.WithFields(logrus.Fields{"File": filename}).Debug("Successfully saved data to file.")
+	a.Logger.WithFields(logrus.Fields{"File": filename,"Task Number":a.Stats.GetCounter("task")}).Debug("Successfully saved data to file.")
 	return true
 }
 
@@ -78,7 +78,7 @@ func (a *Application) submitInformationToCapital(id string, json string) {
 		if a.HX.GetResponseCode(res) == code {
 			a.Logger.Debug("Successfully sent metrics to Capital.")
 			transcode = a.HX.GetResponseItemString(res,"transactioncode")
-			a.Logger.WithFields(logrus.Fields{"Transaction Code": transcode}).Debug("Recevied acknowledgement from Capital.")
+			a.Logger.WithFields(logrus.Fields{"Task Number":a.Stats.GetCounter("task"),"Transaction Code": transcode}).Debug("Recevied acknowledgement from Capital.")
 		}
 	}
 
