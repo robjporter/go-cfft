@@ -2,13 +2,36 @@ package application
 
 import (
 	"sync"
+
 	"../packages/cron"
 	"../packages/health"
 	"../packages/hxconnect"
-	"github.com/labstack/echo"
 	"github.com/Sirupsen/logrus"
+	"github.com/labstack/echo"
 	"github.com/timshannon/bolthold"
 )
+
+type Page struct {
+	startOfDay           string // Get start of day time
+	endOfDay             string
+	startOfWeek          string // Get start of week
+	endOfWeek            string
+	startOfMonth         string // Get stat of month
+	endOfMonth           string
+	startOfYear          string
+	endOfYear            string
+	startOfPreviousMonth string // Get start of previous month
+	lastOfPreviousMonth  string
+}
+
+/*
+type Page struct {
+	startOfDay           time.Time // Get start of day time
+	startOfWeek          time.Time // Get start of week
+	startOfMonth         time.Time // Get stat of month
+	startOfPreviousMonth time.Time // Get start of previous month
+	lastOfPreviousMonth  time.Time
+}*/
 
 type TaskCounter struct {
 	taskCounter     int64

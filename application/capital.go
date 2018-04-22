@@ -57,11 +57,6 @@ func (a *Application) dumpJSONToSendToFile(filename string, json string) bool {
 	return true
 }
 
-func (a *Application) updateOnsiteIndexPage() {
-	a.Logger.WithFields(logrus.Fields{"Task Number": a.Stats.GetCounter("tasks")}).Debug("Beginning to update Index page data.")
-	a.Logger.WithFields(logrus.Fields{"Task Number": a.Stats.GetCounter("tasks")}).Debug("Finished updating index page data.")
-}
-
 func (a *Application) submitInformationToCapital(id string, json string) {
 	transcode := ""
 	code := 201

@@ -1,6 +1,8 @@
 package application
 
 import (
+	"time"
+
 	"../packages/cron"
 	"github.com/Sirupsen/logrus"
 )
@@ -25,6 +27,15 @@ func (a *Application) setupCronJobs() {
 		a.updateOnsiteIndexPage()
 		a.Logger.WithFields(logrus.Fields{"Task Number": counter, "Task Title": "Updating Index Page with latest metrics."}).Debug("Task finished now.")
 
+	}))
+	a.Crons.Schedule(cron.Every(1*time.Hour), cron.FuncJob(func() {
+		// Summerise day
+	}))
+	a.Crons.Schedule(cron.Every(24*time.Hour), cron.FuncJob(func() {
+		// Summerise week
+	}))
+	a.Crons.Schedule(cron.Every(96*time.Hour), cron.FuncJob(func() {
+		// Summerise Month
 	}))
 	a.Logger.WithFields(logrus.Fields{"Task Jobs": len(a.Crons.Entries())}).Debug("Completed setting up Cron jobs.")
 }

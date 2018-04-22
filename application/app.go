@@ -23,6 +23,7 @@ var (
 	once     sync.Once
 	instance *Application
 	override bool
+	index    Page
 )
 
 func init() {

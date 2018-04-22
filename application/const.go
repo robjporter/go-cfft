@@ -10,10 +10,10 @@ const (
 	METRICSERVER             = "http://localhost:5003"
 	DBPATH                   = "data.db"
 	PORT                     = 1323
-	TIMERINVENTORY           = 1
-	TIMERINVENTORYSUBMISSION = 2
+	TIMERINVENTORY           = 5
+	TIMERINVENTORYSUBMISSION = 10
 	TIMEROUT                 = 10
-	TIMEREGENERATION         = 5
+	TIMEREGENERATION         = 1
 	TIMERREGENERATEINDEX     = time.Duration(TIMEREGENERATION) * time.Minute
 	TIMERGATHERSTAT          = time.Duration(TIMERINVENTORY) * time.Minute
 	TIMERSUBMITMETRICS       = time.Duration(TIMERINVENTORYSUBMISSION) * time.Minute //time.Duration(TIMERINVENTORYSUBMISSION) * time.Hour
