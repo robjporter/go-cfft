@@ -28,7 +28,7 @@ func (s *Stat) GetCounter(key string) int64 {
 
 	result := int64(0)
 
-	if c, exists := s.counters[key]; !exists {
+	if c, exists := s.counters[key]; exists {
 		result = c
 	}
 
