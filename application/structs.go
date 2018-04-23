@@ -21,7 +21,7 @@ type Page struct {
 	startOfYear          string
 	endOfYear            string
 	startOfPreviousMonth string // Get start of previous month
-	lastOfPreviousMonth  string
+	endOfPreviousMonth   string
 }
 
 /*
