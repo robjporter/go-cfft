@@ -3,7 +3,7 @@ package application
 import (
 	"os"
 
-	"../packages/hxconnect"
+	"../packages/xTools/hxconnect"
 	"github.com/Sirupsen/logrus"
 	"github.com/timshannon/bolthold"
 )

@@ -13,7 +13,7 @@ import (
 	"../packages/cron"
 	"../packages/health"
 	"../packages/health/url"
-	"../packages/hxconnect"
+	"../packages/xTools/hxconnect"
 
 	"github.com/Sirupsen/logrus"
 	"github.com/labstack/echo"

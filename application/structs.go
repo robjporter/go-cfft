@@ -5,33 +5,40 @@ import (
 
 	"../packages/cron"
 	"../packages/health"
-	"../packages/hxconnect"
+	"../packages/xTools/hxconnect"
 	"github.com/Sirupsen/logrus"
 	"github.com/labstack/echo"
 	"github.com/timshannon/bolthold"
 )
 
-type Page struct {
-	startOfDay           string // Get start of day time
-	endOfDay             string
-	startOfWeek          string // Get start of week
-	endOfWeek            string
-	startOfMonth         string // Get stat of month
-	endOfMonth           string
-	startOfYear          string
-	endOfYear            string
-	startOfPreviousMonth string // Get start of previous month
-	endOfPreviousMonth   string
+type ProcessedMetricData struct {
 }
-
-/*
 type Page struct {
-	startOfDay           time.Time // Get start of day time
-	startOfWeek          time.Time // Get start of week
-	startOfMonth         time.Time // Get stat of month
-	startOfPreviousMonth time.Time // Get start of previous month
-	lastOfPreviousMonth  time.Time
-}*/
+	CurrentDay        int
+	CurrentMonth      int
+	CurrentYear       int
+	CurrentMonthName  string
+	PreviousMonthName string
+
+	StartOfDay   string // Get start of day time
+	StartOfMonth string // Get stat of month
+	StartOfWeek  string // Get start of week
+	StartOfYear  string
+
+	EndOfDay   string
+	EndOfMonth string
+	EndOfWeek  string
+	EndOfYear  string
+
+	StartOfPreviousMonth string // Get start of previous month
+	EndOfPreviousMonth   string
+
+	Current          ProcessedMetricData
+	CurrentDayData   ProcessedMetricData
+	CurrentWeekData  ProcessedMetricData
+	CurrentMonthData ProcessedMetricData
+	CurrentYearData  ProcessedMetricData
+}
 
 type TaskCounter struct {
 	taskCounter     int64

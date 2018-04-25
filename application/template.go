@@ -1,12 +1,13 @@
 package application
 
 import (
-  "io"
-  "../data"
-  "../packages/template"
-  "html/template"
-  "github.com/labstack/echo"
-  assetfs "github.com/elazarl/go-bindata-assetfs"
+	"html/template"
+	"io"
+
+	"../data"
+	"../packages/xTools/template"
+	assetfs "github.com/elazarl/go-bindata-assetfs"
+	"github.com/labstack/echo"
 )
 
 // Template is custom renderer for Echo, to render html from bindata

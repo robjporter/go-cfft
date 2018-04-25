@@ -18,7 +18,7 @@ import (
 	"github.com/go-http-utils/headers"
 	"golang.org/x/net/proxy"
 	//"../jsonpath"
-	"../gjson"
+	"./gjson"
 )
 
 // Version is this package's version number.

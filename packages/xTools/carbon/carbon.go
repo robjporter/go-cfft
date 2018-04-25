@@ -286,6 +286,20 @@ func (c *Carbon) PreviousMonthStartDay() *Carbon {
 	return c
 }
 
+func (c *Carbon) MonthName() string {
+	return c.Month().String()
+}
+
+func (c *Carbon) DayNumber() int {
+	return c.Day()
+}
+func (c *Carbon) MonthNumber() int {
+	return int(c.Month())
+}
+func (c *Carbon) YearNumber() int {
+	return c.Year()
+}
+
 //formatters
 
 // return string with DateTime format "2006-01-25 15:04:05"

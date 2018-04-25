@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"time"
 
-	"../packages/hxconnect"
+	"../packages/xTools/hxconnect"
 
 	"github.com/Sirupsen/logrus"
 )
