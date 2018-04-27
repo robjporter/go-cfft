@@ -1,8 +1,9 @@
 package application
 
+// TODO:  Added compression to all server submissions.
+
 import (
 	"context"
-	"fmt"
 	"os"
 	"os/signal"
 	"runtime"
@@ -60,7 +61,8 @@ func New() *Application {
 
 	app.HX.Metrics.Server = METRICSERVER
 	app.HX.Metrics.Key = METRICKEY
-	app.Logger.WithFields(logrus.Fields{"Task Number": app.Stats.GetCounter("tasks")}).Debug("Initialisation complete.")
+
+	app.addToLogDebug(app.Stats.GetCounter("tasks"), nil, "Initialisation complete.")
 
 	app.setupServer()
 	app.setupErrorHandler()
@@ -79,14 +81,15 @@ func (a *Application) Start() {
 	a.db.dbpath = DBPATH
 	counter := a.Stats.IncreaseCounter("tasks")
 	if !isFile(a.db.dbpath) {
-		a.Logger.WithFields(logrus.Fields{"Task Number": counter}).Debug("This looks like the first time the application has been run or is being reinitialised.")
+		a.addToLogDebug(counter, nil, "This looks like the first time the application has been run or is being reinitialised.")
 		a.setupSetupRoutes()
 	} else {
-		a.Logger.WithFields(logrus.Fields{"Task Number": counter}).Debug("This looks like the application has been setup.")
+		a.addToLogDebug(counter, nil, "This looks like the application has been setup.")
 		if a.connectToDB(a.db.dbpath) {
 			a.loadCredentialInformationFromDB()
 			a.setupCronJobs()
 		} else {
+			a.addToLogDebug(counter, nil, "Failed to connect to DB.")
 			a.Logger.WithFields(logrus.Fields{"Task Number": counter}).Debug("Failed to connect to DB.")
 		}
 	}
@@ -94,15 +97,15 @@ func (a *Application) Start() {
 	a.setupCheckers()
 	a.Crons.Start()
 	a.Server.Debug = true
-	a.Logger.WithFields(logrus.Fields{"Task Number": counter}).Debug("Application running and ready at http://<IP>:." + a.GetServerPort())
+	a.addToLogDebug(counter, nil, "Application running and ready at http://<IP>:."+a.GetServerPort())
 	// Start server
 	go func() {
 		if err := a.Server.Start(":" + a.GetServerPort()); err != nil {
-			a.Logger.WithFields(logrus.Fields{"Task Number": a.Stats.GetCounter("tasks")}).Info("Shutting down the server")
+			a.addToLogDebug(counter, nil, "Shutting down the server.")
 		}
 	}()
 
-	fmt.Println(a.applicationBanner())
+	a.applicationDisplayBanner()
 
 	// Wait for interrupt signal to gracefully shutdown the server with
 	// a timeout of 10 seconds.
@@ -112,17 +115,17 @@ func (a *Application) Start() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	if err := a.Server.Shutdown(ctx); err != nil {
-		a.Logger.WithFields(logrus.Fields{"Task Number": counter}).Fatal(err)
+		a.addToLogFatal(a.Stats.GetCounter("tasks"), nil, "Fatal Error - Shutting down the server.")
 	}
 	a.Stop()
 }
 
 func (a *Application) Stop() {
 	counter := a.Stats.IncreaseCounter("tasks")
-	a.Logger.WithFields(logrus.Fields{"Task Number": counter}).Debug("Stopping all services.")
+	a.addToLogDebug(counter, nil, "Stopping all services.")
 	a.db.data.Close()
 	a.Crons.Stop()
-	a.Logger.WithFields(logrus.Fields{"Task Number": counter}).Debug("Successfully finished stopping all services.")
+	a.addToLogDebug(counter, nil, "Successfully finished stopping all services.")
 }
 
 func (a *Application) GetServerPort() string {

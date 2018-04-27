@@ -20,18 +20,18 @@ type Page struct {
 	CurrentMonthName  string
 	PreviousMonthName string
 
-	StartOfDay   string // Get start of day time
-	StartOfMonth string // Get stat of month
-	StartOfWeek  string // Get start of week
-	StartOfYear  string
+	StartOfDay   int64 // Get start of day time
+	StartOfMonth int64 // Get stat of month
+	StartOfWeek  int64 // Get start of week
+	StartOfYear  int64
 
-	EndOfDay   string
-	EndOfMonth string
-	EndOfWeek  string
-	EndOfYear  string
+	EndOfDay   int64
+	EndOfMonth int64
+	EndOfWeek  int64
+	EndOfYear  int64
 
-	StartOfPreviousMonth string // Get start of previous month
-	EndOfPreviousMonth   string
+	StartOfPreviousMonth int64 // Get start of previous month
+	EndOfPreviousMonth   int64
 
 	Current          ProcessedMetricData
 	CurrentDayData   ProcessedMetricData

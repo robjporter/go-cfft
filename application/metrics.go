@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"../packages/uuid"
+	"../packages/xTools/carbon"
 
 	"github.com/Sirupsen/logrus"
 	"github.com/timshannon/bolthold"
@@ -11,7 +12,7 @@ import (
 
 type MetricData struct {
 	UUID                     string
-	CollectionTime           time.Time
+	CollectionTime           int64
 	CollectionDuration       string
 	Submitted                bool
 	SubmittedOn              time.Time
@@ -29,7 +30,8 @@ type MetricData struct {
 func (a *Application) gatherAndRecordMetrics() {
 	var metrics MetricData
 	metrics.Submitted = false
-	metrics.CollectionTime = time.Now()
+	//metrics.CollectionTime = carbon.Now().ToDateTimeString()
+	metrics.CollectionTime = carbon.Now().ToTimeStamp()
 	u2, err := uuid.NewV4()
 	if err != nil {
 		a.Logger.WithFields(logrus.Fields{"Task Number": a.Stats.GetCounter("tasks")}).Warn("There was an error producing a UUID for this update.  Therefore it will not be submitted.")
@@ -49,7 +51,7 @@ func (a *Application) gatherAndRecordMetrics() {
 		metrics.Nodes = a.metricGetFurtherNodeInfo(metrics.Nodes)
 	}
 
-	metrics.CollectionDuration = time.Since(metrics.CollectionTime).String()
+	metrics.CollectionDuration = time.Since(time.Unix(metrics.CollectionTime, 0)).String()
 
 	a.saveMetricsToLocalDB(metrics)
 

@@ -1,7 +1,5 @@
 package application
 
-import "github.com/Sirupsen/logrus"
-
 type MetricAbout struct {
 	Build    string
 	DVersion string
@@ -12,16 +10,18 @@ type MetricAbout struct {
 
 func (a *Application) metricGetAbout() *MetricAbout {
 	res, err := a.HX.About()
+	counter := a.Stats.IncreaseCounter("tasks")
+	a.addToLogDebug(counter, nil, "Starting to get About metrics.")
 
 	if err != nil {
-		a.Logger.WithFields(logrus.Fields{"Task Number": a.Stats.GetCounter("tasks")}).Debug("We were unable to collect the about information from HX Connect API.")
+		a.addToLogDebug(counter, map[string]interface{}{"Error": err}, "We were unable to collect the about information from HX Connect API.")
 		a.LastError = err
 		return &MetricAbout{}
 	}
 
 	if a.HX.GetResponseOK(res) {
 		if a.HX.GetResponseCode(res) == 200 {
-			a.Logger.WithFields(logrus.Fields{"Task Number": a.Stats.GetCounter("tasks")}).Debug("Querying HX Connect for About information.")
+			a.addToLogDebug(counter, nil, "Querying HX Connect for About information.")
 
 			build := a.HX.GetResponseItemString(res, "build")
 			dversion := a.HX.GetResponseItemString(res, "displayVersion")
@@ -29,7 +29,7 @@ func (a *Application) metricGetAbout() *MetricAbout {
 			locale := a.HX.GetResponseItemString(res, "locale")
 			version := a.HX.GetResponseItemString(res, "productVersion")
 
-			a.Logger.WithFields(logrus.Fields{"Task Number": a.Stats.GetCounter("tasks"), "Build": build, "DisplayVersion": dversion, "Locale": locale, "Version": version}).Debug("Querying HX Connect for About information complete.")
+			a.addToLogDebug(counter, map[string]interface{}{"Build": build, "DisplayVersion": dversion, "Locale": locale, "Version": version}, "Querying HX Connect for About information complete.")
 
 			return &MetricAbout{
 				Build:    build,
@@ -39,9 +39,9 @@ func (a *Application) metricGetAbout() *MetricAbout {
 				Version:  version,
 			}
 		}
-		a.Logger.WithFields(logrus.Fields{"Task Number": a.Stats.GetCounter("tasks"), "ResponseCode": a.HX.GetResponseCode(res)}).Warning("An unexpected response code was received for About information.")
+		a.addToLogDebug(counter, map[string]interface{}{"ResponseCode": a.HX.GetResponseCode(res)}, "An unexpected response code was received for About information.")
 	} else {
-		a.Logger.WithFields(logrus.Fields{"Task Number": a.Stats.GetCounter("tasks"), "ResponseOK": false}).Warning("We received a failed attempt at connecting to the About endpoint.")
+		a.addToLogDebug(counter, map[string]interface{}{"ResponseOK": false}, "We received a failed attempt at connecting to the About endpoint.")
 	}
 	return &MetricAbout{}
 }

@@ -313,3 +313,7 @@ func round(f float64) int {
 	}
 	return int(f + math.Copysign(0.5, f))
 }
+
+func (c *Carbon) ToTimeStamp() int64 {
+	return c.Unix()
+}

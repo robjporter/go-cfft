@@ -1,6 +1,7 @@
 package as
 
 import (
+	"bytes"
 	"encoding/base64"
 	"fmt"
 	"net"
@@ -8,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode"
 	"unicode/utf8"
 )
 
@@ -909,4 +911,90 @@ func ToTime(simple bool, valuea ...interface{}) time.Time {
 		}
 	}
 	return time.Time{}
+}
+
+func ToCamelCase(str string) string {
+	if len(str) == 0 {
+		return ""
+	}
+
+	buf := &bytes.Buffer{}
+	var r0, r1 rune
+	var size int
+
+	// leading '_' will appear in output.
+	for len(str) > 0 {
+		r0, size = utf8.DecodeRuneInString(str)
+		str = str[size:]
+
+		if r0 != '_' {
+			break
+		}
+
+		buf.WriteRune(r0)
+	}
+
+	if len(str) == 0 {
+		return buf.String()
+	}
+
+	r0 = unicode.ToUpper(r0)
+
+	for len(str) > 0 {
+		r1 = r0
+		r0, size = utf8.DecodeRuneInString(str)
+		str = str[size:]
+
+		if r1 == '_' && r0 == '_' {
+			buf.WriteRune(r1)
+			continue
+		}
+
+		if r1 == '_' {
+			r0 = unicode.ToUpper(r0)
+		} else {
+			r0 = unicode.ToLower(r0)
+		}
+
+		if r1 != '_' {
+			buf.WriteRune(r1)
+		}
+	}
+
+	buf.WriteRune(r0)
+	return buf.String()
+}
+
+func Width(str string) int {
+	var r rune
+	var size, n int
+
+	for len(str) > 0 {
+		r, size = utf8.DecodeRuneInString(str)
+		n += RuneWidth(r)
+		str = str[size:]
+	}
+
+	return n
+}
+
+func RuneWidth(r rune) int {
+	switch {
+	case r == utf8.RuneError || r < '\x20':
+		return 0
+
+	case '\x20' <= r && r < '\u2000':
+		return 1
+
+	case '\u2000' <= r && r < '\uFF61':
+		return 2
+
+	case '\uFF61' <= r && r < '\uFFA0':
+		return 1
+
+	case '\uFFA0' <= r:
+		return 2
+	}
+
+	return 0
 }
