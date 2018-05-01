@@ -2,6 +2,8 @@ package carbon
 
 import (
 	"math"
+	"reflect"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -276,8 +278,18 @@ func (c *Carbon) EndOfYear() *Carbon {
 	return c
 }
 
-func (c *Carbon) PreviousMonthLastDay() *Carbon {
+func (c *Carbon) PreviousMonth() *Carbon {
 	c.Time = c.StartOfMonth().Add(-time.Second)
+	return c
+}
+
+func (c *Carbon) NextMonth() *Carbon {
+	c = c.AddMonth(1)
+	return c
+}
+
+func (c *Carbon) PreviousMonthLastDay() *Carbon {
+	c = c.SubMonth(1)
 	return c
 }
 
@@ -300,12 +312,12 @@ func (c *Carbon) YearNumber() int {
 	return c.Year()
 }
 
-//formatters
-
 // return string with DateTime format "2006-01-25 15:04:05"
 func (c *Carbon) ToDateTimeString() string {
 	return c.Format(DATE_TIME_LAYOUT)
 }
+
+// CUSTOM
 
 func round(f float64) int {
 	if math.Abs(f) < 0.5 {
@@ -316,4 +328,155 @@ func round(f float64) int {
 
 func (c *Carbon) ToTimeStamp() int64 {
 	return c.Unix()
+}
+
+func (c *Carbon) Quarter(FYStartMonth ...time.Month) int {
+	var startFY time.Month
+
+	if FYStartMonth == nil {
+		startFY = time.January
+	} else {
+		startFY = FYStartMonth[0]
+	}
+
+	currentMonth := c.MonthNumber()
+
+	if exists, _ := inArray(currentMonth, getQuarter(1, startFY)); exists {
+		return 1
+	}
+	startFY += 3
+	if exists, _ := inArray(currentMonth, getQuarter(2, startFY)); exists {
+		return 2
+	}
+	startFY += 3
+	if exists, _ := inArray(currentMonth, getQuarter(3, startFY)); exists {
+		return 3
+	}
+	startFY += 3
+	if exists, _ := inArray(currentMonth, getQuarter(4, startFY)); exists {
+		return 4
+	}
+
+	return 0
+}
+
+func getQuarter(quarter, monthName time.Month) []int {
+	month := int(monthName)
+	var res []int
+
+	for i := 0; i < 3; i++ {
+		if month > 12 {
+			month -= 12
+		}
+		res = append(res, month)
+		month++
+	}
+	return res
+}
+
+func inArray(val interface{}, array interface{}) (exists bool, index int) {
+	exists = false
+	index = -1
+
+	switch reflect.TypeOf(array).Kind() {
+	case reflect.Slice:
+		s := reflect.ValueOf(array)
+
+		for i := 0; i < s.Len(); i++ {
+			if reflect.DeepEqual(val, s.Index(i).Interface()) == true {
+				index = i
+				exists = true
+				return
+			}
+		}
+	}
+	return
+}
+
+func (c *Carbon) Tomorrow() *Carbon {
+	return c.AddDay()
+}
+
+func (c *Carbon) Yesterday() *Carbon {
+	return c.SubDay()
+}
+
+func (c *Carbon) Ordinal() string {
+	return strconv.Itoa(c.DayNumber()) + c.OrdinalOnly()
+}
+
+func (c *Carbon) OrdinalOnly() string {
+	suffix := "th"
+	switch c.DayNumber() % 10 {
+	case 1:
+		if c.DayNumber()%100 != 11 {
+			suffix = "st"
+		}
+	case 2:
+		if c.DayNumber()%100 != 12 {
+			suffix = "nd"
+		}
+	case 3:
+		if c.DayNumber()%100 != 13 {
+			suffix = "rd"
+		}
+	}
+
+	return suffix
+}
+
+func (c *Carbon) DaysInMonth() int {
+	days := 31
+	switch c.Month() {
+	case time.April, time.June, time.September, time.November:
+		days = 30
+		break
+	case time.February:
+		days = 28
+		if c.IsLeapYear() {
+			days = 29
+		}
+		break
+	}
+
+	return days
+}
+
+func (c *Carbon) IsLeapYear() bool {
+	year := c.Year()
+	return year%4 == 0 && (year%100 != 0 || year%400 == 0)
+}
+
+func (c *Carbon) DaysLeftInWeek() int {
+	if int(c.Weekday()) == 0 {
+		return 0
+	}
+	return 7 - int(c.Weekday())
+}
+
+func (c *Carbon) DaysLeftInMonth() int {
+	return c.DaysInMonth() - c.Day()
+}
+
+func (c *Carbon) DaysLeftInYear() int {
+	if c.IsLeapYear() {
+		return 366 - c.YearDay()
+	} else {
+		return 365 - c.YearDay()
+	}
+}
+
+func (c *Carbon) DaysToHours(days int) int {
+	return days * 24
+}
+
+func (c *Carbon) IsWeekday() bool {
+	return !c.IsWeekend()
+}
+
+func (c *Carbon) IsWeekend() bool {
+	if c.Weekday() == 0 || c.Weekday() == 6 {
+		return true
+	}
+	return false
 }

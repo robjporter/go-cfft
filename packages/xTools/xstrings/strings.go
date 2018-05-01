@@ -5,22 +5,41 @@ import (
 	"unicode/utf8"
 )
 
-func Center(str string, length int, pad string) string {
-	l := Len(str)
-
-	if l >= length || pad == "" {
+func Center(str, padding string, width uint) string {
+	text := []rune(str)
+	if len(text) >= int(width) {
 		return str
 	}
+	padrunes := []rune(padding)
 
-	remains := length - l
-	padLen := Len(pad)
+	out := make([]rune, int(width))
+	pos := 0
 
-	output := &bytes.Buffer{}
-	output.Grow(len(str) + (remains/padLen+1)*len(pad))
-	writePadString(output, pad, padLen, remains/2)
-	output.WriteString(str)
-	writePadString(output, pad, padLen, (remains+1)/2)
-	return output.String()
+	padwidth := int(width)/2 - 2 - len(text)/2
+	if len(str)%2 == 0 {
+		padwidth++
+	}
+	for i := 0; i < padwidth; i++ {
+		out[pos] = padrunes[i%len(padrunes)]
+		pos++
+	}
+	out[pos] = ' '
+	pos++
+	for i := 0; i < len(text); i++ {
+		out[pos] = text[i]
+		pos++
+	}
+	out[pos] = ' '
+	pos++
+
+	if len(str)%2 == 1 {
+		padwidth++
+	}
+	for i := 0; i < padwidth; i++ {
+		out[pos] = padrunes[i%len(padrunes)]
+		pos++
+	}
+	return string(out)
 }
 
 func Len(str string) int {
