@@ -96,6 +96,27 @@ func FormatIntToByte(b int64) string {
 	return fmt.Sprintf("%.02f%s", value, multiple)
 }
 
+func ToSliceInterface(iface ...interface{}) (ret []interface{}) {
+	ret = []interface{}{}
+	if len(iface) == 0 || iface[0] == nil {
+		return
+	}
+	t := iface[0]
+	val := reflect.ValueOf(t)
+	if IsPtr(t) {
+		val = val.Elem()
+	}
+	if val.Kind() != reflect.Slice || val.Len() == 0 {
+		return
+	}
+
+	ret = make([]interface{}, val.Len())
+	for i := 0; i < val.Len(); i++ {
+		ret[i] = val.Index(i).Interface()
+	}
+	return
+}
+
 func Convert(value interface{}, t reflect.Kind) (interface{}, error) {
 
 	switch reflect.TypeOf(value).Kind() {
@@ -979,4 +1000,37 @@ func RuneWidth(r rune) int {
 	}
 
 	return 0
+}
+
+func SetStructField(structPtr interface{}, name string, value interface{}) error {
+	structValue := reflect.ValueOf(structPtr).Elem()
+	fieldValue := structValue.FieldByName(name)
+
+	if !fieldValue.IsValid() {
+		return fmt.Errorf("No such field: %s in structPtr", name)
+	}
+
+	if !fieldValue.CanSet() {
+		return fmt.Errorf("Cannot set %s field value", name)
+	}
+
+	fieldType := fieldValue.Type()
+	val := reflect.ValueOf(value)
+	if fieldType != val.Type() && fieldType.Kind() != reflect.Interface {
+		return errors.New("Provided value type didn't match structPtr field type")
+	}
+
+	fieldValue.Set(val)
+	return nil
+}
+
+// ChangeStruct applies map of changes to struct
+func ChangeStructFields(structPtr interface{}, changesMap map[string]interface{}) {
+	for k, v := range changesMap {
+		SetField(structPtr, k, v)
+	}
+}
+
+func TypeName(v interface{}) string {
+	return fmt.Sprintf("%v", reflect.TypeOf(v))
 }

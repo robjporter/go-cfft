@@ -1,11 +1,13 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
-	"./xTools/as"
+	//"./xTools/as"
 	"./xTools/carbon"
+	"./xTools/f"
 	"./xTools/permissions"
 	"./xTools/xstrings"
 )
@@ -15,6 +17,19 @@ func main() {
 	permissionsFunc()
 	carbonFunc()
 	asFunc()
+	fFunc()
+}
+
+func fFunc() {
+	fmt.Println("F FUNC======================================================")
+	fmt.Println(f.F(test())[0])
+	fmt.Println(f.F(test())[1])
+	fmt.Println(f.F(test())[2])
+	fmt.Println(f.F(test())[3])
+}
+
+func test() (int, bool, string, error) {
+	return 1, true, "TEST", errors.New("TESTING")
 }
 
 func asFunc() {
